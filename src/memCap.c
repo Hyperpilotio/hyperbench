@@ -91,6 +91,12 @@ int main(int argc, char **argv) {
 		exit(0);
 	}
 	block = (char*)mmap(NULL, memory_size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
+
+        if (block == MAP_FAILED) {
+          perror("Unable to mmap");
+          exit(1);
+        }
+
 	int usr_timer = atoi(argv[1]);
         double intensity = atoi(argv[2]) / 100.0;
         if (intensity > 1.0) {
@@ -100,7 +106,6 @@ int main(int argc, char **argv) {
         printf("Size: %d", write_size);
 	double time_spent = 0.0;
   	clock_t begin, end;
-
 
 	while (time_spent < usr_timer) {
   		begin = clock();
