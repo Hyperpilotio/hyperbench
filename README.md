@@ -4,8 +4,24 @@ iBench is a suite of contentious microbenchmarks. Each microbenchmark targets a 
 
 # License & Copyright
 
-iBench is free software; you can redistribute it and/or modify it under the terms of the [BSD License](LICENSE) as published by the Open Source Initiative, revised version. 
+iBench is free software; you can redistribute it and/or modify it under the terms of the [BSD License](LICENSE) as published by the Open Source Initiative, revised version.
 
-iBench was originally written by Christina Delimitrou at Stanford University, and per Stanford University policy, the copyright of this original code remains with the Board of Trustees of Leland Stanford Junior University. 
+iBench was originally written by Christina Delimitrou at Stanford University, and per Stanford University policy, the copyright of this original code remains with the Board of Trustees of Leland Stanford Junior University.
 
 If you use this software in your work, we request that you reference the [iBench paper](http://ieeexplore.ieee.org/document/6704667/) ("iBench: Quantifying Interference for Datacenter Applications", Delimitrou and Kozyrakis, IISWC, September 2013), and that you send us a citation of your work.
+
+# SoI (Sources of Interference) descriptions
+
+- cpu: CPU cycles. As intensity increases, more threads (up to available cores) will be launched.
+
+- l1d:
+
+- l1i:
+
+- l2:
+
+- l3:
+
+- memBw: Memory Bandwidth. As intensity increases, the larger memory size it will write.
+
+- memCap: Memory Capacity. As intensity increases, the larger memory footprint it will write to.
