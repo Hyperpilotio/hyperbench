@@ -43,8 +43,8 @@ unsigned long int get_ns() {
 void remove_all_chars(char* str, char c) {
 	char *pr = str, *pw = str;
 	while (*pr) {
-		*pw = *pr++;
-		pw += (*pw != c);
+          *pw = *pr++;
+          pw += (*pw != c);
 	}
 	*pw = '\0';
 }
@@ -55,8 +55,8 @@ long long int get_memory_size_kb(void) {
 	FILE *meminfo;
 
 	if (!(meminfo = fopen("/proc/meminfo", "r"))) {
-		perror("/proc/meminfo: fopen");
-		return -1;
+          perror("/proc/meminfo: fopen");
+	  return -1;
 	}
 
 	while (fgets(line, sizeof(line), meminfo)) {
@@ -75,45 +75,49 @@ long long int get_memory_size_kb(void) {
 	}
 
 	fclose(meminfo);
+        perror("Unable to find MemTotal in proc/meminfo");
 	return -1;
 }
 
 int main(int argc, char **argv) {
 	timespec sleepValue = {0};
 
+	if (argc < 3) {
+          printf("Usage: ./memCap <duration in sec> <intensity>\n");
+	  exit(0);
+	}
+
 	char* volatile block;
 	long long int memory_size = get_memory_size_kb();
-	printf("Total Memory Size: %llu\n", memory_size);
-
-	/*Usage: ./memCap <duration in sec>*/
-	if (argc < 3) {
-		printf("Usage: ./memCap <duration in sec> <intensity>\n");
-		exit(0);
-	}
-	block = (char*)mmap(NULL, memory_size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
-
-        if (block == MAP_FAILED) {
-          perror("Unable to mmap");
+        if (memory_size == -1) {
           exit(1);
         }
+	printf("Total Memory Size: %llu\n", memory_size);
 
 	int usr_timer = atoi(argv[1]);
         double intensity = atoi(argv[2]) / 100.0;
         if (intensity > 1.0) {
           intensity = 1.0;
         }
-        int write_size = int(memory_size * intensity);
-        printf("Size: %d", write_size);
+        long long int write_size = memory_size * intensity;
+        printf("Size: %llu\n", write_size);
+
+	block = (char*)mmap(NULL, write_size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_NORESERVE, -1, 0);
+        if (block == MAP_FAILED) {
+          perror("Unable to mmap");
+          exit(1);
+        }
+
 	double time_spent = 0.0;
   	clock_t begin, end;
 
 	while (time_spent < usr_timer) {
-  		begin = clock();
-		memcpy(block, block + memory_size - write_size, write_size);
-		//sleepValue.tv_nsec = (usr_timer-get_ns())/usr_timer;
-                //nanosleep(&sleepValue, NULL);
-		end = clock();
-  		time_spent += (double)(end - begin) / CLOCKS_PER_SEC;
+          begin = clock();
+          memcpy(block, block, write_size);
+          //sleepValue.tv_nsec = (usr_timer-get_ns())/usr_timer;
+          //nanosleep(&sleepValue, NULL);
+          end = clock();
+          time_spent += (double)(end - begin) / CLOCKS_PER_SEC;
 	}
 	return 0;
 }
