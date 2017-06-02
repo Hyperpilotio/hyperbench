@@ -61,7 +61,7 @@ int main(int argc, char **argv) {
   int usr_timer = atoi(argv[1]);
   printf ("usr_time: %d\n", usr_timer);
 
-  intensity = atoi(argv[2]);
+  int intensity = atoi(argv[2]);
   if (intensity < 0 || intensity > 20) {
     printf("usr_timer must be an integer between [0..20]\n");
     exit(0);
