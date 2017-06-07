@@ -1,15 +1,29 @@
 {
-    "cpu": {
-        "image": "hyperpilot/hyperbench",
-        "command": ["./cpu", "9999"],
-        "intensityConfiguration": {
-            "cgroups": {
-                "cpushare": 0.5
-            }
-        }
-    },
-    "memCap": {
-        "image": "hyperpilot/hyperbench",
-        "command": ["./memCap", "9999", "INTENSITY"]
-    }
+    "benchmarks": [
+	{
+	    "name": "cpu",
+	    "resourceType": "CPUCapacity",
+	    "image": "hyperpilot/hyperbench",
+	    "intensity": 10,
+	    "cgroupConfig": {
+		"setCpuQuota": true
+	    },
+	    "command": {
+		"path": "./cpu",
+	        "args": ["3600"]
+	    },
+	    "count": 1
+	},
+	{
+	    "name": "memCap",
+	    "resourceType": "MemoryCapacity",
+	    "image": "hyperpilot/hyperbench",
+	    "intensity": 10,
+	    "command": {
+		"path": "./memCap",
+	        "args": ["3600"]
+	    },
+	    "count": 1
+	}
+    ]
 }
