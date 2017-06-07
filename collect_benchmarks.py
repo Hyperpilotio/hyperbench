@@ -17,9 +17,9 @@ if __name__ == "__main__":
 
     with open("benchmarks.json") as f:
         benchmarks = json.load(f)
-        for name, config in benchmarks.items():
+        for config in benchmarks["benchmarks"]:
             configdb.benchmarks.replace_one(
-                filter={"name": name},
-                replacement=dict(name=name, **config),
+                filter={"name": config["name"]},
+                replacement=config,
                 upsert=True
             )
