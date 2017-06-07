@@ -3,7 +3,10 @@
        {
             "name": "cpu",
             "image": "hyperpilot/hyperbench",
-            "command": ["./cpu", "9999"],
+            "command": {
+                "path": "./cpu",
+                "args": ["9999"]
+            },
             "intensityConfiguration": {
                 "cgroups": {
                     "cpushare": 0.5
@@ -13,7 +16,10 @@
         {
             "name": "memCap",
             "image": "hyperpilot/hyperbench",
-            "command": ["./memCap", "9999", "#INTENSITY#"]
+            "command": {
+                "path": "./memCap",
+                "args": [ "9999", "#INTENSITY#" ]
+            }
         }
     ]
 }
