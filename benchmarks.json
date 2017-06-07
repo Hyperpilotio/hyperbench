@@ -5,10 +5,11 @@
             "image": "hyperpilot/hyperbench",
             "command": ["./cpu", "9999"],
             "intensityConfiguration": {
-            "cgroups": {
-                "cpushare": 0.5
-            }
-        },
+                "cgroups": {
+                    "cpushare": 0.5
+                }
+            },
+        }
         {
             "name": "memCap",
             "image": "hyperpilot/hyperbench",
