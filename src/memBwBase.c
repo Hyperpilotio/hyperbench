@@ -30,7 +30,7 @@
 #include <float.h>
 
 #ifndef N
-#   define N    10000000
+#   define N    2000000
 #endif
 #ifndef NTIMES
 #   define NTIMES       100
@@ -39,8 +39,12 @@
 #   define OFFSET       0
 #endif
 
-static double bwData[N+OFFSET];
+static double   bwData[N+OFFSET],
+		b[N+OFFSET],
+		c[N+OFFSET];
 
+
+unsigned int bwStreamSize = 2*N;
 //#ifdef _OPENMP
 extern int omp_get_num_threads();
 //#endif
@@ -58,43 +62,26 @@ int main (int argc, char **argv) {
 //#endif
 
 	double scalar = 3.0;
-	if (argc < 3) {
-		printf("Usage: ./memBw <duration in sec> <intensity>\n");
+	/*Usage: ./memBw <duration in sec>*/
+	if (argc < 2) {
+		printf("Usage: ./memBw <duration in sec>\n");
 		exit(0);
 	}
-
 	unsigned int usr_timer = atoi(argv[1]);
-	unsigned int usr_intensity = atoi(argv[2]);
-	if (usr_intensity < 1) {
-		printf("Intensity has to be a positive integer!\n");
-		exit(0);
-	}
-
-	unsigned int bwStreamSize = N * usr_intensity / 100;
-	unsigned int numChunks = N / bwStreamSize;
-	double doubleType;
-	printf("For intensity = %d, stream size = %ld Bytes\n", usr_intensity, bwStreamSize * sizeof(doubleType));
-
 	double time_spent = 0.0;
-
 	while (time_spent < usr_timer) {
+		double *mid = bwData + (bwStreamSize / 2);
 		clock_t begin = clock();
-
-		for (int l = 1; l <= numChunks; l++) {
-			#pragma omp parallel for
-			for (int i = (l-1) * bwStreamSize; i < l * bwStreamSize; i++) {
-				bwData[i] = scalar * bwData[i];
-			}
-		}
-
 		#pragma omp parallel for
-		for (int i = numChunks * bwStreamSize; i < N; i++) {
-			bwData[i] = scalar * bwData[i];
+		for (int i = 0; i < bwStreamSize / 2; i++) {
+			bwData[i] = scalar * mid[i];
 		}
-
+		#pragma omp parallel for
+		for (int i = 0; i < bwStreamSize / 2; i++) {
+			mid[i] = scalar * bwData[i];
+		}
 		clock_t end = clock();
-  		time_spent += (double)(end - begin) / CLOCKS_PER_SEC;
-
+		time_spent += (double)(end - begin) / CLOCKS_PER_SEC;
 	}
 	return 0;
 }

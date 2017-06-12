@@ -24,6 +24,17 @@
 	        "args": ["3600"]
 	    },
 	    "count": 1
+	},
+	{
+	    "name": "memBw",
+	    "resourceType": "MemorBandwidth",
+	    "image": "hyperpilot/hyperbench",
+	    "intensity": 10,
+	    "command": {
+		"path": "./memBw",
+	        "args": ["3600"]
+	    },
+	    "count": 1
 	}
     ]
 }
