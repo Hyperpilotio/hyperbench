@@ -37,20 +37,14 @@ uint64_t getNs() {
 }
 
 /**
- *  CPU microbenchmark that runs while loop in number of threads
- *  based on intensity.
- *  Each additional thread added is based on number of threads available.
- *  For example, with 4 threads available, 0-25 will use one thread,
- *  26-50 uses 2, etc.
+ *  CPU microbenchmark that runs while loop. Intensity is assumed to be tuned
+ *  outside of the program by tuning cgroup.
  */
 int main(int argc, const char** argv) {
 	if (argc < 2) {
 		printf("Usage: ./cpu <duration in sec>\n");
 		exit(0);
 	}
-        //float intensity = atoi(argv[2]) * 1.0;
-        //uint32_t perThreadIntensity = 100 / maxThreads;
-        //uint32_t threads = ceil(intensity / perThreadIntensity);
 
 	uint32_t maxThreads = omp_get_num_procs();
         uint32_t threads = maxThreads;
