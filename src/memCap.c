@@ -32,7 +32,7 @@
 
 //#define CACHE_SIZE 2*1024*1024
 #define NS_PER_S (1000000000L)
-#define MAX_SIZE_RATIO 0.95
+#define MAX_SIZE_RATIO 0.9
 
 unsigned long int get_ns() {
 	struct timespec ts;

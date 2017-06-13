@@ -81,23 +81,39 @@ int main(int argc, char **argv) {
 
 	char* volatile block;
 	int CACHE_SIZE = cache_size_kb(); 
-	printf("L2 cache size: %dKB\n", CACHE_SIZE); 
-	block = (char*)mmap(NULL, CACHE_SIZE, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
+	if (CACHE_SIZE < 0) {
+		printf("Cannot determine L2 cache size; quit.\n");
+		exit(0);
+	}
+	printf("L2 cache size: %dKB\n", CACHE_SIZE);
 
-
-	/*Usage: ./l2 <duration in sec>*/
-	if (argc < 2) { 
-		printf("Usage: ./l2 <duration in sec>\n"); 
+	/*Usage: ./l2 <duration in sec> <intensity in percentage>*/
+	if (argc < 3) {
+		printf("Usage: ./l2 <duration in sec> <intensity in percentage>\n"); 
 		exit(0); 
 	}	
+
+	double intensity = atoi(argv[2]) / 100.0;
+	if (intensity < 0) {
+		intensity = 0.01;
+	}
+	if (intensity > 1) {
+		intensity = 1.0;
+	}
+        unsigned int block_size = CACHE_SIZE * 1000 * intensity;
+	printf("For intensity = %6.4f, block size = %u Bytes\n", intensity, block_size);
+
+	block = (char*)mmap(NULL, block_size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
+
 	unsigned long int usr_timer = getNs() + NS_PER_S*atoi(argv[1]);
 
-
+	printf("now: %lu\n", getNs());
 	while (getNs() < usr_timer) {
-		memcpy(block, block+CACHE_SIZE/2, CACHE_SIZE/2);
-		sleepValue.tv_nsec = (usr_timer-getNs())/usr_timer;
+		memcpy(block, block+block_size/2, block_size/2);
+		sleepValue.tv_nsec = usr_timer-getNs();
 		nanosleep(&sleepValue, NULL);
 	}
+	printf("now: %lu\n", getNs());
+
 	return 0;
 }
-

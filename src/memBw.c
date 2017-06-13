@@ -54,9 +54,10 @@ int main (int argc, char **argv) {
 //	}
 //#endif
 
+	/*Usage: ./l2 <duration in sec> <intensity in percentage>*/
 	double scalar = 3.0;
 	if (argc < 3) {
-		printf("Usage: ./memBw <duration in sec> <intensity>\n");
+		printf("Usage: ./memBw <duration in sec> <intensity in percentage>\n");
 		exit(0);
 	}
 

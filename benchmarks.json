@@ -35,6 +35,17 @@
 	        "args": ["3600"]
 	    },
 	    "count": 1
+	},
+	{
+	    "name": "l2",
+	    "resourceType": "L2 Cache Capacity",
+	    "image": "hyperpilot/hyperbench",
+	    "intensity": 10,
+	    "command": {
+		"path": "./l2",
+	        "args": ["3600"]
+	    },
+	    "count": 1
 	}
     ]
 }
