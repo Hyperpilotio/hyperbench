@@ -32,6 +32,7 @@
 
 //#define CACHE_SIZE 2*1024*1024
 #define NS_PER_S (1000000000L)
+#define MAX_SIZE_RATIO 0.95
 
 unsigned long int get_ns() {
 	struct timespec ts;
@@ -96,10 +97,13 @@ int main(int argc, char **argv) {
 
 	int usr_timer = atoi(argv[1]);
         double intensity = atoi(argv[2]) / 100.0;
+	if (intensity < 0) {
+	  intensity = 0.01;
+	}
         if (intensity > 1.0) {
           intensity = 1.0;
         }
-        long long int write_size = memory_size * intensity;
+        long long int write_size = memory_size * intensity * MAX_SIZE_RATIO;
         printf("Size: %llu\n", write_size);
 
 	block = (char*)mmap(NULL, write_size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_NORESERVE, -1, 0);

@@ -60,7 +60,7 @@ int main(int argc, const char** argv) {
 
 	uint64_t nsPerRun = NS_PER_S*atoi(argv[1]);
 	uint64_t endNs = getNs() + nsPerRun;
-#pragma omp parallel
+	#pragma omp parallel
 	while (getNs() < endNs);
 
 	return 0;

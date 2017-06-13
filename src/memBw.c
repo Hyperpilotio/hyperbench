@@ -32,9 +32,6 @@
 #ifndef N
 #   define N    10000000
 #endif
-#ifndef NTIMES
-#   define NTIMES       100
-#endif
 #ifndef OFFSET
 #   define OFFSET       0
 #endif
@@ -64,16 +61,18 @@ int main (int argc, char **argv) {
 	}
 
 	unsigned int usr_timer = atoi(argv[1]);
-	unsigned int usr_intensity = atoi(argv[2]);
-	if (usr_intensity < 1) {
-		printf("Intensity has to be a positive integer!\n");
-		exit(0);
+	double intensity = atoi(argv[2]) / 100.0;
+	if (intensity < 0) {
+		intensity = 0.01;
+	}
+	if (intensity > 1.0) {
+		intensity = 1.0;
 	}
 
-	unsigned int bwStreamSize = N * usr_intensity / 100;
+	unsigned int bwStreamSize = N * intensity;
 	unsigned int numChunks = N / bwStreamSize;
 	double doubleType;
-	printf("For intensity = %d, stream size = %ld Bytes\n", usr_intensity, bwStreamSize * sizeof(doubleType));
+	printf("For intensity = %f, stream size = %ld Bytes\n", intensity, bwStreamSize * sizeof(doubleType));
 
 	double time_spent = 0.0;
 
