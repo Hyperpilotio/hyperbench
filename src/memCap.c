@@ -50,7 +50,7 @@ void remove_all_chars(char* str, char c) {
 	*pw = '\0';
 }
 
-long long int get_memory_size_kb(void) {
+long long int get_memory_size_in_bytes(void) {
 	char line[512], buffer[32];
 	long long int column;
 	FILE *meminfo;
@@ -69,7 +69,7 @@ long long int get_memory_size_kb(void) {
 			remove_all_chars(colStr, 'B');
 			remove_all_chars(colStr, ' ');
 			column = atoi(colStr);
-		        column = 1000*column;
+		        column = 1024 * column;
 			fclose(meminfo);
 			return column;
 		}
@@ -83,17 +83,18 @@ long long int get_memory_size_kb(void) {
 int main(int argc, char **argv) {
 	timespec sleepValue = {0};
 
+	/* Usage: ./l2 <duration in sec> <intensity in percentage> */
 	if (argc < 3) {
-          printf("Usage: ./memCap <duration in sec> <intensity>\n");
+          printf("Usage: ./memCap <duration in sec> <intensity in percentage>\n");
 	  exit(0);
 	}
 
 	char* volatile block;
-	long long int memory_size = get_memory_size_kb();
+	long long int memory_size = get_memory_size_in_bytes();
         if (memory_size == -1) {
           exit(1);
         }
-	printf("Total Memory Size: %llu\n", memory_size);
+	printf("Total Memory Size: %llu Bytes\n", memory_size);
 
 	int usr_timer = atoi(argv[1]);
         double intensity = atoi(argv[2]) / 100.0;
@@ -103,8 +104,9 @@ int main(int argc, char **argv) {
         if (intensity > 1.0) {
           intensity = 1.0;
         }
+
         long long int write_size = memory_size * intensity * MAX_SIZE_RATIO;
-        printf("Size: %llu\n", write_size);
+        printf("For intensity = %6.4f, block size =  %llu Bytes\n", intensity, write_size);
 
 	block = (char*)mmap(NULL, write_size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_NORESERVE, -1, 0);
         if (block == MAP_FAILED) {
