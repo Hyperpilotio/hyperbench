@@ -86,9 +86,9 @@ int main(int argc, char **argv) {
 	if (CACHE_SIZE < 0) {
 		exit(1);
 	}
-	printf("L2 cache size: %d KB\n", CACHE_SIZE);
+	printf("Detected L2 cache size: %d KB\n", CACHE_SIZE);
 
-	/*Usage: ./l2 <duration in sec> <intensity in percentage>*/
+	/* Usage: ./l2 <duration in sec> <intensity in percentage> */
 	if (argc < 3) {
 		printf("Usage: ./l2 <duration in sec> <intensity in percentage>\n"); 
 		exit(0); 
@@ -104,7 +104,7 @@ int main(int argc, char **argv) {
 
 	/* Convert cache size from kb to bytes, with intensity modification */
 	unsigned int block_size = CACHE_SIZE * 1024 * intensity;
-	printf("For intensity = %6.4f, block size = %u Bytes\n", intensity, block_size);
+	printf("For intensity = %6.4f, block size = %u bytes\n", intensity, block_size);
 
 	block = (char*)mmap(NULL, block_size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
 

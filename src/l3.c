@@ -91,15 +91,29 @@ int main(int argc, char **argv) {
 	char* volatile block;
   
 	int CACHE_SIZE = cache_size(); 
+	if (CACHE_SIZE < 0) {
+                exit(1);
+        }
 	printf("Detected L3 cache size: %d bytes\n", CACHE_SIZE);
 
-
-	/*Usage: ./l3 <duration in sec>*/
-	if (argc < 2) { 
-		printf("Usage: ./l3 <duration in sec>\n"); 
+	/* Usage: ./l3 <duration in sec> <intensity in percentage> */
+        if (argc < 3) {
+                printf("Usage: ./l3 <duration in sec> <intensity in percentage>\n");
 		exit(0); 
-	}	
-	block = (char*)mmap(NULL, CACHE_SIZE, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
+	}
+
+        double intensity = atoi(argv[2]) / 100.0;
+        if (intensity < 0) {
+                intensity = 0.01;
+        }
+        if (intensity > 1) {
+                intensity = 1.0;
+        }
+
+        unsigned int block_size = CACHE_SIZE * intensity;
+        printf("For intensity = %6.4f, block size = %u bytes\n", intensity, block_size);
+
+	block = (char*)mmap(NULL, block_size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
 	if (block == (char *) -1) {
 		perror("error: cannot mmap");
 		exit(1);
@@ -109,15 +123,13 @@ int main(int argc, char **argv) {
 	double time_spent = 0.0; 
   	clock_t begin, end;
 
-
 	while (time_spent < usr_timer) {
   		begin = clock();
-		memcpy(block, block+CACHE_SIZE/2, CACHE_SIZE/2);
-		// note: replaced original throttling sleep with yielding that gives chance ther workloads to run
+		memcpy(block, block+block_size/2, block_size/2);
+		// note: replaced original throttling sleep with yielding that gives chance for the workloads to run
 		sched_yield(); // sleep((float)(usr_timer-time_spent)/usr_timer);
 		end = clock();
   		time_spent += (double)(end - begin) / CLOCKS_PER_SEC;
 	}
 	return 0;
 }
-

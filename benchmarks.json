@@ -38,11 +38,22 @@
 	},
 	{
 	    "name": "l2",
-	    "resourceType": "L2 Cache Capacity",
+	    "resourceType": "L2CacheCapacity",
 	    "image": "hyperpilot/hyperbench",
 	    "intensity": 10,
 	    "command": {
 		"path": "./l2",
+	        "args": ["3600"]
+	    },
+	    "count": 1
+	},
+	{
+	    "name": "l3",
+	    "resourceType": "L3CacheCapacity",
+	    "image": "hyperpilot/hyperbench",
+	    "intensity": 10,
+	    "command": {
+		"path": "./l3",
 	        "args": ["3600"]
 	    },
 	    "count": 1
