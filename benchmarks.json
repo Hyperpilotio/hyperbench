@@ -65,6 +65,7 @@
             "configs": [
                 {
                     "name": "l2",
+                    "placementHost": "service",
                     "durationConfig": {
                         "maxDuration": 3600
                     },
