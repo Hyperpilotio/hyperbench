@@ -3,6 +3,7 @@
 Collects benchmark configurations in benchmarks.json and save them into MongoDB
 """
 
+import sys
 import json
 from pymongo import MongoClient
 
@@ -12,6 +13,9 @@ MONGO_PASSWORD = "hyperpilot"
 CONFIGDB_NAME = "configdb"
 
 if __name__ == "__main__":
+    if len(sys.argv) > 1:
+        MONGO_URL = sys.argv[1]
+
     configdb = MongoClient(MONGO_URL).get_database(CONFIGDB_NAME)
     configdb.authenticate(MONGO_USER, MONGO_PASSWORD)
 
