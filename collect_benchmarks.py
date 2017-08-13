@@ -22,7 +22,7 @@ if __name__ == "__main__":
     with open("benchmarks.json") as f:
         benchmarks = json.load(f)
         for config in benchmarks["benchmarks"]:
-            print "Writing benchmark " + config["name"]
+            print("Writing benchmark " + config["name"])
             configdb.benchmarks.replace_one(
                 filter={"name": config["name"]},
                 replacement=config,
